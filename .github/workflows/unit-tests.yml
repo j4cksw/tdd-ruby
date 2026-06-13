@@ -1,0 +1,31 @@
+name: Unit Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 02
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          working-directory: 02
+
+      - name: Prepare test database
+        run: bin/rails db:test:prepare
+        env:
+          RAILS_ENV: test
+
+      - name: Run RSpec
+        run: bundle exec rspec
